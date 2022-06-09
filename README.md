@@ -26,13 +26,12 @@ The library provides the Modbus RTU as a middleware, allows different Modbus Dev
 ## Supported Modbus RTU functions
 The following Modbus functions are available so far (Pull Request for adding new functionality is welcome):
 
-Discrete Coils/Flags
-
-0x02 - Read Discrete Inputs
-
-Registers
+0x02 - Read Discrete Inputs (not tested yet)
 
 0x03 - Read Holding Registers
+
 0x04 - Read Input Registers
+
 0x06 - Write Single Register
+
 0x10 - Write Multiple Registers
