@@ -4,11 +4,11 @@ This Modbus-RTU library focus on supporting various RTU functions. The RS485 is 
 
 
 ## Why another Modbus RTU library?
-Many of the Modbus RTU libraries or open source projects that we seen are either written for one specific device in mind or for one specific MCU interface, as the result it is tightly integrated and lack of separation between communication layer, the modbus protocol stack and the device driver, so you often have to do some modification in order to support the MCU that you are using, or re-write many part of the code in order to support a different Modbus devive.
+Many of the Modbus RTU libraries or open source projects that we seen are either written for one specific device in mind or for one specific MCU interface, as the result it is tightly integrated and lack of separation between communication layer, the modbus protocol stack and the device driver, so you often have to do some modification in order to support the MCU that you are using, or re-write many part of the code in order to support a different Modbus device.
 
 This library has the dependency of RS485 library for a good reason. The Modbus protocol layer is separated from lower layer communication protocol so that you could instantiate and configure your Serial Communication via the RS485 library, while this library focusing on providing well-tested and reliable Modbus RTU funcitonalities.
 
-Many embiousious Modbus projects are trying have one single library to support both Modbus RTU and Modbus TCP, dispite the two have very different system architectures and network interfaces. As the result, the codes are bloated and complicate to extend or adding new supports for various Modbus functions. This library focus only on Modbus RTU, and do it right effectively and efficiently.
+Many embition Modbus projects are trying have one single library to support both Modbus RTU and Modbus TCP, dispite the two have very different system architectures and network interfaces. As the result, the codes are bloated and complicate, which make it difficult to extend or adding new supports for various Modbus functions. This library focus only on Modbus RTU, and do it right effectively and efficiently.
 
 Modbus RTU is an extreamely flexible protocol, this is a good thing, however, none of the Modbus devices share the same implementation from each others. For this reason, it is almost certain that in order to support a Modbus device, your sketch is more or less a Device Driver for that particular Modbus device, in terms of how the Input and Holdings registers are used.
 
