@@ -1,0 +1,16 @@
+{
+  "name": "Modbus-RTU",
+  "keywords": "modbus rtu, rs485, communication",
+  "description": "This library add ModBus RTU functionalities on top of RS485 library. It separates the device driver from the Modbus protocol and RS485 physical layer, making it extremely flexible for both extending the Modbus stack and writing your own Modbus device driver.",
+  "repository":{
+    "type": "git",
+    "url": "https://github.com/e-tinkers/Modbus-RTU.git"
+  },
+  "authors":{
+        "name": "E-Tinkers",
+        "email": "cheetah_henry@hotmail.com"
+   },
+  "version": "1.0.0",
+  "frameworks": "arduino",
+  "platforms": "*"
+}
