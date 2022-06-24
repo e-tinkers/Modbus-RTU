@@ -18,6 +18,7 @@ private:
     void _sendRequest(uint8_t* packet, uint8_t size);
     uint16_t _calculateCRC(uint8_t* array, uint8_t len);
     int8_t _getResponse(uint8_t func, uint16_t nw);
+    int8_t _errNo;
 
     RS485* _rs485;
 

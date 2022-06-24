@@ -2,8 +2,9 @@
 #include <Modbus-RTU.h>
 
 // Based on MODBUS Application Protocol Specification V1.1b3 page 48
+// In modbus protocol, error 0, 12 and 13 are undefined, added by this library
 const char* modbusExceptions[] = {
-  "Network Timeout",     //In modbus, error 0 is undefined, repurpose as "Network Timeout"
+  "No Error",
   "Illegal Function",
   "Illegal Data Address",
   "Illegal Data Value",
@@ -14,7 +15,9 @@ const char* modbusExceptions[] = {
   "Memory Parity Error",
   "Undefined",
   "Gateway Path Unavailable",
-  "Gateway Target Device Failed to Response"
+  "Gateway Target Device Failed to Response",
+  "Network Timeout",  // errNo = 12
+  "CRC Error"         // errNo = 13
 };
 
 Modbus::Modbus(RS485* p_rs485) : _rs485(p_rs485) {};
@@ -86,19 +89,32 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
 
     unsigned long respStart = millis();
     int8_t i = 0;
+    _errNo = 0;
     while (true) {
         if (_rs485->available())
             response[i++] = _rs485->read();
 
         // error response is 6 bytes long, and func byte MSB set to 1
-        if (i == 6 && response[1] >= 0x80)
-            return -response[2];            // error occured
+        if (i == 6 && response[1] >= 0x80) {
+            _errNo = response[2];
+            return -1;
+        }
 
-        if (millis() - respStart > MODBUS_RESPONSE_TIMEOUT)
-          return 0;                       // timeout
+        //timeout
+        if (millis() - respStart > MODBUS_RESPONSE_TIMEOUT) {
+          _errNo = 12;
+          return -1;
+        }
 
-        if (i == _responseLength)
-            break;                        // all bytes received
+        // all bytes received
+        if (i == _responseLength) {
+            uint8_t temp[20] = {0};
+            memcpy(temp, response, i-2);
+            int16_t crc = _calculateCRC(temp, i-2);
+            if ( highByte(crc) != response[i-1] || lowByte(crc) != response[i-2])
+               _errNo = 13;    //crc error
+            break;
+        }
 
         yield();
     }
@@ -155,9 +171,7 @@ uint8_t Modbus::getLowByte() {
 }
 
 const char * Modbus::errorMsg() {
-    if ( response[1] < 0x80)
-        return "No Error";
-    return modbusExceptions[response[2]];
+    return modbusExceptions[_errNo];
 }
 
 /* Modbus Function Code 0x02 for reading discrete input registers
