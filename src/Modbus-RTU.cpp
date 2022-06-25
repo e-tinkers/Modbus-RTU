@@ -50,14 +50,25 @@ void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
 
     _rs485->beginTransmission();
     _rs485->write(packet, size);
-    _rs485->endTransmission();
+    _rs485->flush();
 
+    // calculate required frame delay time
+    unsigned long _br = _rs485->getBaudrate();
+    unsigned int framedelay = 1750;
+    if (_br <= 9600)
+        framedelay = 39 / _br * 1000000;
+    delayMicroseconds(framedelay);
+
+    _rs485->endTransmission();
 }
 
 int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
 
     int8_t _responseLength = 0;
 
+    // clear receiving buffer
+    while(_rs485->available()) _rs485->read();
+    
     switch (func) {
         case READ_COIL_REGISTERS:
         case READ_DISCRETE_INPUT_REGISTERS:
@@ -90,34 +101,38 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
     unsigned long respStart = millis();
     int8_t i = 0;
     _errNo = 0;
+
     while (true) {
-        if (_rs485->available())
+        if (_rs485->available()>0)
             response[i++] = _rs485->read();
 
         // error response is 6 bytes long, and func byte MSB set to 1
         if (i == 6 && response[1] >= 0x80) {
             _errNo = response[2];
-            return -1;
+            return 0;
         }
 
         //timeout
         if (millis() - respStart > MODBUS_RESPONSE_TIMEOUT) {
           _errNo = 12;
-          return -1;
+          return 0;
         }
 
         // all bytes received
         if (i == _responseLength) {
             uint8_t temp[20] = {0};
             memcpy(temp, response, i-2);
-            int16_t crc = _calculateCRC(temp, i-2);
-            if ( highByte(crc) != response[i-1] || lowByte(crc) != response[i-2])
+            int16_t crc = _calculateCRC(response, i-2);
+            if ( highByte(crc) != response[i-1] || lowByte(crc) != response[i-2]) {
                _errNo = 13;    //crc error
+               return 0;
+            }
             break;
         }
 
         yield();
     }
+
     return _responseLength;
 
 }
@@ -171,7 +186,10 @@ uint8_t Modbus::getLowByte() {
 }
 
 const char * Modbus::errorMsg() {
-    return modbusExceptions[_errNo];
+    if (_errNo >=0 && _errNo <= 13)
+        return modbusExceptions[_errNo];
+    else
+        return "";
 }
 
 /* Modbus Function Code 0x02 for reading discrete input registers

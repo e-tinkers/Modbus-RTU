@@ -26,10 +26,10 @@ Modbus mb(&rs485);
 
 void setup() {
 
+    rs485.begin(9600, SERIAL_8N1);
+
     Serial.begin(115200);
     Serial.println();
-
-    rs485.begin(9600, SERIAL_8N1);
 
     // Reading the Device Settings
     mb.readHoldingRegister(DDS238_ID, DDS238_COMMUNICATION, 1);
@@ -42,9 +42,13 @@ void setup() {
     Serial.println( bStr[baud_rate] );
     Serial.println("========================");
 
+    rs485.end();
+
 }
 
 void loop() {
+
+    rs485.begin(9600, SERIAL_8N1);
 
     // Reading Power Meter
     mb.readHoldingRegister(DDS238_ID, DDS238_VOLTAGE, 1);
@@ -70,6 +74,8 @@ void loop() {
 
     mb.readHoldingRegister(DDS238_ID, DDS238_FREQUENCY, 1);
     int16_t freq = mb.getInt();
+
+    rs485.end();
 
     Serial.print("\nVoltage(V): ");        Serial.print(voltage/10.0);
     Serial.print("\tCurrent(A): ");        Serial.print(current/100.0);

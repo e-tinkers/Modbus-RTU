@@ -22,10 +22,10 @@ Modbus mb(&rs485);
 
 void setup() {
 
+    rs485.begin(9600, SERIAL_8N1);
+
     Serial.begin(115200);
     Serial.println();
-
-    rs485.begin(9600, SERIAL_8N1, 0, 0);
 
     mb.readHoldingRegister(SHT20_ID, SHT20_ADDRESS, 1);
     int16_t id = mb.getInt();
@@ -48,9 +48,14 @@ void setup() {
     Serial.println(humidity_offset);
 
     Serial.println("======================");
+
+    rs485.end();
 }
 
 void loop() {
+
+    rs485.begin(9600, SERIAL_8N1);
+    delay(50);
 
     mb.readInputRegister(SHT20_ID, SHT20_TEMPERATURE, 1);
     float temperature = mb.getInt()/100.0;
@@ -64,6 +69,8 @@ void loop() {
     float humidity = mb.getInt()/100.0;
     Serial.print("Humidity: ");
     Serial.println(humidity);
+
+    rs485.end();
 
     delay(10000);
 
