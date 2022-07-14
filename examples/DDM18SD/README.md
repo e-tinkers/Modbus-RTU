@@ -1,6 +1,6 @@
 ## Single-phase Energy Meter DDM18SD
 
-![DDM18SD Single-phase Energy Meter](/Users/henrycheung1/Documents/Arduino/Modbus-RTU/examples/DDM18SD/DDM18SD.png "DDM18SD Single-phase Energy Meter")
+![DDM18SD Single-phase Energy Meter](https://github.com/e-tinkers/Modbus-RTU/blob/master/examples/DDM18SD/DDM18SD.png "DDM18SD Single-phase Energy Meter")
 
 
 
@@ -131,4 +131,4 @@ Indicates that the setting has been changed successfully
 
 ### Resource
 
-[Hex to IEEE 754 floating point converter](Use https://babbage.cs.qc.cuny.edu/IEEE-754.old/32bit.html)
+[Hex to IEEE 754 floating point converter](https://babbage.cs.qc.cuny.edu/IEEE-754.old/32bit.html)
