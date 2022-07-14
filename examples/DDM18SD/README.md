@@ -1,5 +1,9 @@
 ## Single-phase Energy Meter DDM18SD
 
+![DDM18SD Single-phase Energy Meter](/Users/henrycheung1/Documents/Arduino/Modbus-RTU/examples/DDM18SD/DDM18SD.png "DDM18SD Single-phase Energy Meter")
+
+
+
 ### Communication Configuration
 
 **Baud Rate:** 1200bps, 2400bps, 4800bps and 9600bps (Default).
@@ -123,10 +127,7 @@ Request(HEX): 01 10 00 00 00 02 04 44 96 00 00 25 7B
 
 Return(HEX): 01 10 00 00 00 02 41 C8
 
-
 Indicates that the setting has been changed successfully 
-
-
 
 ### Resource
 
