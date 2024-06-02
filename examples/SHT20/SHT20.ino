@@ -49,28 +49,22 @@ void setup() {
 
     Serial.println("======================");
 
-    rs485.end();
 }
 
 void loop() {
-
-    rs485.begin(9600, SERIAL_8N1);
-    delay(50);
 
     mb.readInputRegister(SHT20_ID, SHT20_TEMPERATURE, 1);
     float temperature = mb.getInt()/100.0;
     Serial.print("Temperature: ");
     Serial.println(temperature);
-    // This particular sht20 modbus device seems require 50ms delay after each
+    // This particular sht20 modbus device seems require 100ms delay after each
     // sensor reading, otherwise both values are not correct
-    delay(50);
+    delay(100);
 
     mb.readInputRegister(SHT20_ID, SHT20_HUMIDITY, 1);
     float humidity = mb.getInt()/100.0;
     Serial.print("Humidity: ");
     Serial.println(humidity);
-
-    rs485.end();
 
     delay(10000);
 

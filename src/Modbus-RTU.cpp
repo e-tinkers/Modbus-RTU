@@ -48,6 +48,10 @@ void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
     packet[size-2] = lowByte(crc);
     packet[size-1] = highByte(crc);
 
+#if defined(SHOW_RAW_DATA)
+    debugPrint(packet, size);
+#endif
+  
     _rs485->beginTransmission();
     _rs485->write(packet, size);
     _rs485->flush();
@@ -132,6 +136,10 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
 
         yield();
     }
+
+#if defined(SHOW_RAW_DATA)
+    debugPrint(response, _responseLength);
+#endif
 
     return _responseLength;
 
