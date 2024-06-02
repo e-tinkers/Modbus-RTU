@@ -25,6 +25,7 @@ private:
 public:
     Modbus(RS485* p_rs485);
     void debugPrint(uint8_t * array, size_t len);
+    void printModbusExcpetion(void);
     float getFloat();
     int16_t getInt();
     int32_t getInt32();

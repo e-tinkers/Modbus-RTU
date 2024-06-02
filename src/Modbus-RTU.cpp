@@ -155,6 +155,15 @@ void Modbus::debugPrint(uint8_t * array, size_t len) {
     Serial.println();
 }
 
+void Modbus::printModbusExcpetion() {
+    if (_errNo != 0 ) {
+        Serial.print("Modbus Exception: ");
+        Serial.print(_errNo);
+        Serial.print(", ");
+        Serial.println(modbusExceptions[_errNo]);
+    }
+}
+
 // Refer to https://babbage.cs.qc.cuny.edu/IEEE-754.old/32bit.html for HEX/float conversion
 float Modbus::getFloat() {
 
