@@ -1,25 +1,6 @@
 #include <RS485.h>
 #include <Modbus-RTU.h>
 
-// Based on MODBUS Application Protocol Specification V1.1b3 page 48
-// In modbus protocol, error 0, 12 and 13 are undefined, added by this library
-const char* modbusExceptions[] = {
-  "No Error",
-  "Illegal Function",
-  "Illegal Data Address",
-  "Illegal Data Value",
-  "Server Device Failure",
-  "Acknowledge",
-  "Server Device Busy",
-  "Undefined",
-  "Memory Parity Error",
-  "Undefined",
-  "Gateway Path Unavailable",
-  "Gateway Target Device Failed to Response",
-  "Network Timeout",  // errNo = 12
-  "CRC Error"         // errNo = 13
-};
-
 Modbus::Modbus(RS485* p_rs485) : _rs485(p_rs485) {};
 
 // crc calculation by Jaime García (https://github.com/peninquen/Modbus-Energy-Monitor-Arduino/)
@@ -147,15 +128,6 @@ void Modbus::debugPrint(uint8_t * array, size_t len) {
     Serial.println();
 }
 
-void Modbus::printModbusExcpetion() {
-    if (_errNo != 0 ) {
-        Serial.print("Modbus Exception: ");
-        Serial.print(_errNo);
-        Serial.print(", ");
-        Serial.println(modbusExceptions[_errNo]);
-    }
-}
-
 // Refer to https://babbage.cs.qc.cuny.edu/IEEE-754.old/32bit.html for HEX/float conversion
 float Modbus::getFloat() {
 
@@ -195,10 +167,36 @@ uint8_t Modbus::getLowByte() {
 }
 
 const char * Modbus::errorMsg() {
-    if (_errNo >=0 && _errNo <= 13)
-        return modbusExceptions[_errNo];
-    else
-        return "";
+    if (_errNo != 0) {
+        switch (_errNo) {
+            case MODBUS_EXCEPTION_ILLEGAL_FUNCTION:
+                return "Illegal Function";
+            case MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS:
+                return "Illegal Function";
+            case MODBUS_EXCEPTION_ILLEGAL_DATA_VALUE:
+                return "Illegal Data Address";
+            case MODBUS_EXCEPTION_SLAVE_OR_SERVER_FAILURE:
+                return "Server/Device Failure";
+            case MODBUS_EXCEPTION_ACKNOWLEDGE:
+                return "Acknowledge";
+            case MODBUS_EXCEPTION_SLAVE_OR_SERVER_BUSY:
+                return "Server/Device Busy";
+            case MODBUS_EXCEPTION_NOT_DEFINED7:
+            case MODBUS_EXCEPTION_NOT_DEFINED9:
+                return "Undefined";
+            case MODBUS_EXCEPTION_MEMORY_PARITY:
+                return "Memory Parity Error";
+            case MODBUS_EXCEPTION_GATEWAY_PATH:
+                return "Gateway Path Unavailable";
+            case MODBUS_EXCEPTION_GATEWAY_TARGET:
+                return "Gateway Target Device Failed to Response";
+            case ERROR_NETWORK_TIMEOUT:
+                return "Network Timeout";
+            case ERROR_CRC_ERROR:
+                return "CRC Error";
+        }
+    }
+    return NULL;
 }
 
 /* Modbus Function Code 0x02 for reading discrete input registers

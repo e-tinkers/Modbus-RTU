@@ -2,7 +2,7 @@
 #define MODBUS_RTU__H
 #include <RS485.h>
 
-#define MODBUS_RESPONSE_TIMEOUT 1000
+#define MODBUS_RESPONSE_TIMEOUT       1000
 
 #define READ_COIL_REGISTERS           0x01
 #define READ_DISCRETE_INPUT_REGISTERS 0x02
@@ -11,6 +11,24 @@
 #define WRITE_SINGLE_COIL_REGISTERS   0x05
 #define WRITE_SINGLE_REGISTER         0x06
 #define WRITE_MULTIPLE_REGISTERS      0x10
+
+// Based on MODBUS Application Protocol Specification V1.1b3 page 48
+// In modbus protocol, there is no exception 12 and 13, it is added by this library for communication error
+enum {
+    MODBUS_EXCEPTION_ILLEGAL_FUNCTION = 0x01,
+    MODBUS_EXCEPTION_ILLEGAL_DATA_ADDRESS,
+    MODBUS_EXCEPTION_ILLEGAL_DATA_VALUE,
+    MODBUS_EXCEPTION_SLAVE_OR_SERVER_FAILURE,
+    MODBUS_EXCEPTION_ACKNOWLEDGE,
+    MODBUS_EXCEPTION_SLAVE_OR_SERVER_BUSY,
+    MODBUS_EXCEPTION_NOT_DEFINED7,
+    MODBUS_EXCEPTION_MEMORY_PARITY,
+    MODBUS_EXCEPTION_NOT_DEFINED9,
+    MODBUS_EXCEPTION_GATEWAY_PATH,
+    MODBUS_EXCEPTION_GATEWAY_TARGET,
+    ERROR_NETWORK_TIMEOUT,
+    ERROR_CRC_ERROR
+};
 
 class Modbus
 {
@@ -25,7 +43,6 @@ private:
 public:
     Modbus(RS485* p_rs485);
     void debugPrint(uint8_t * array, size_t len);
-    void printModbusExcpetion(void);
     float getFloat();
     int16_t getInt();
     int32_t getInt32();
