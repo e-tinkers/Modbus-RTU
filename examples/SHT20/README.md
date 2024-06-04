@@ -2,7 +2,7 @@
 
 ![SHT20 Modbus Temperature Humidity Sensor](https://github.com/e-tinkers/Modbus-RTU/blob/master/examples/SHT20/SHT20_modbus.png "SHT20 Modbus Temperature Humidity Sensor")
 
-> Most of the online stores on Aliexpress or alike refer to this [documenation](https://github.com/e-tinkers/Modbus-RTU/blob/master/examples/SHT20/Temperature-and-humidity-transmitter-SHT20-sensor-Modbus-RS485.pdf), the document however contains wrong information such as wrong CRC calculation and other errors. The following information are verified by me based on the sensor that I have.
+> **Most of the online stores on Aliexpress or alike refer to this [documenation](https://github.com/e-tinkers/Modbus-RTU/blob/master/examples/SHT20/Temperature-and-humidity-transmitter-SHT20-sensor-Modbus-RS485.pdf), the document however contains wrong information such as wrong CRC calculation and other errors. The following information are verified and corrected based on actual tests.**
 
 ### Communication Configuration
 
