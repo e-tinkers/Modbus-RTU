@@ -51,21 +51,31 @@ Request(HEX): 01 04 00 01 00 01 60 0A
 | 00 01 | Read 1 words(2 bytes) of data           |
 | 60 0A | CRC, with LSB first, MSB as second byte |
 
-Return(HEX): 01 04 02 01 31 79 74
+Return(HEX): 01 04 02 01 31 79 74 (for those sensors with x10 factor)
+Return(HEX): 01 04 02 0B EA 3F 8F (for those sensors with x100 factor)
 
 | Data  | Description              |
 | ----- | ------------------------ |
 | 01    | Devive ID                |
 | 04    | Return function code     |
 | 02    | Number of bytes returned |
-| 01 31 | Temperature Reading      |
+| 01 31 | Temperature Reading(x10) |
+| 79 74 | CRC                      |
+
+or
+
+| Data  | Description              |
+| ----- | ------------------------ |
+| 01    | Devive ID                |
+| 04    | Return function code     |
+| 02    | Number of bytes returned |
+| 0B EA | Temperature Reading(x100)|
 | 79 74 | CRC                      |
 
 Temperature value 0x131 = 305, 305/10 = 30.5 degree Celsius
+Temperature value 0xBEA = 3050, 3050/100 = 30.5 degree Celsius
 
 > The temperature value is in two-compliment format for negative number, 0xFF33 = -205 or -20.5 degree Celsius
-
-> Despite many online information shown that the value stored in the register is 10x of the temperature reading, but some devices have a 100x multiple.
 
 #### Read Humidity Value
 
@@ -79,19 +89,29 @@ Request(HEX): 01 04 00 02 00 01 90 0A
 | 00 01 | Read 1 words(2 bytes) of data           |
 | 90 0A | CRC, with LSB first, MSB as second byte |
 
-Return(HEX): 01 04 02 02 22 38 49
+Return(HEX): 01 04 02 02 22 38 49 (for those sensors with x10 factor)
+Return(HEX): 01 04 02 15 54
 
 | Data  | Description              |
 | ----- | ------------------------ |
 | 01    | Devive ID                |
 | 04    | Return function code     |
 | 02    | Number of bytes returned |
-| 02 22 | Humidity Reading         |
+| 02 22 | Humidity Reading (10x)   |
 | 38 49 | CRC                      |
 
-Temperature value 0x222 = 546, 546/10 = 54.6 RH %
+or
 
-> Despite many online information shown that the value stored in the register is 10x of the humidity reading, but some devices have a 100x multiple.
+| Data  | Description              |
+| ----- | ------------------------ |
+| 01    | Devive ID                |
+| 04    | Return function code     |
+| 02    | Number of bytes returned |
+| 15 54 | Humidity Reading (100x)  |
+| B6 5F | CRC                      |
+
+Humidity value 0x222 = 546, 546/10 = 54.6 RH %
+Humidity value 0x1554 = 5460, 5460/100 = 54.6 RH %
 
 #### Read both Temperature and Humidity values
 

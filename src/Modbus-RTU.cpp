@@ -32,7 +32,7 @@ void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
     uint16_t crc = _calculateCRC(packet, size-2);
     packet[size-2] = lowByte(crc);
     packet[size-1] = highByte(crc);
-  
+    
     _rs485->beginTransmission();
     _rs485->write(packet, size);
     _rs485->flush();
