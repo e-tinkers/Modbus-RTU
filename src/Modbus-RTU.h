@@ -39,13 +39,13 @@ private:
 
     int8_t _errNo;
     uint8_t _id;
+    bool _debugEnabled;
 
     RS485* _rs485;
 
 public:
     Modbus(RS485* p_rs485);
-    void begin(uint8_t device_id);
-    void debugPrint(uint8_t * array, size_t len);
+    void begin(uint8_t device_id, bool debug_on=false);
     float getFloat();
     int16_t getInt();
     int32_t getInt32();
@@ -59,6 +59,8 @@ public:
     int8_t writeSingleRegister(uint16_t reg, uint16_t data);
     int8_t writeMultipleRegisters(uint16_t reg, float payload);
     int8_t writeMultipleRegisters(uint16_t reg, uint16_t payload);
+
+    void debugPrint(const char* dir, uint8_t * array, size_t len);
 
     uint8_t response[255];
 

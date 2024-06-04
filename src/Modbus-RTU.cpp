@@ -3,6 +3,18 @@
 
 Modbus::Modbus(RS485* p_rs485) : _rs485(p_rs485) {};
 
+// debugging function
+void Modbus::debugPrint(const char* dir, uint8_t * array, size_t len) {
+    Serial.print(dir);
+    Serial.print(" [ ");
+    for (int i=0; i<len; i++) {
+        if (array[i] < 0x10) Serial.print('0');
+        Serial.print(array[i], HEX);
+        Serial.print(' ');
+    }
+    Serial.println("]");
+}
+
 // crc calculation by Jaime García (https://github.com/peninquen/Modbus-Energy-Monitor-Arduino/)
 uint16_t Modbus::_calculateCRC(uint8_t* array, uint8_t len) {
 
@@ -23,8 +35,9 @@ uint16_t Modbus::_calculateCRC(uint8_t* array, uint8_t len) {
 
 }
 
-void Modbus::begin(uint8_t device_id) {
+void Modbus::begin(uint8_t device_id, bool debug_on) {
     _id = device_id;
+    _debugEnabled = debug_on;
 }
 
 void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
@@ -33,7 +46,8 @@ void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
     packet[size-2] = lowByte(crc);
     packet[size-1] = highByte(crc);
 
-    debugPrint(packet, size);
+    if (_debugEnabled)
+        debugPrint("TX ==>", packet, size);
 
     _rs485->beginTransmission();
     _rs485->write(packet, size);
@@ -120,20 +134,11 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
         yield();
     }
 
-    debugPrint(response, _responseLength);
-    
+    if(_debugEnabled)
+        debugPrint("RX <==", response, _responseLength);
+
     return _responseLength;
 
-}
-
-// debugging function
-void Modbus::debugPrint(uint8_t * array, size_t len) {
-    for (int i=0; i<len; i++) {
-        if (array[i] < 0x10) Serial.print('0');
-        Serial.print(array[i], HEX);
-        Serial.print(' ');
-    }
-    Serial.println();
 }
 
 // Refer to https://babbage.cs.qc.cuny.edu/IEEE-754.old/32bit.html for HEX/float conversion
