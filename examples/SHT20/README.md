@@ -30,12 +30,15 @@
 
 | Register Address | Description        | Unit | Format  |
 | ---------------- | ------------------ | ---- | ------- |
-| 0x0001           | Temperature        | C    | Integer |
-| 0x0002           | Humidity           | RH   | Integer |
+| 0x0001           | Temperature        | C*   | Integer |
+| 0x0002           | Humidity           | RH*  | Integer |
 | 0x0101           | Device Address     |      | Integer |
 | 0x0102           | Baud Rate          |      | Integer |
 | 0x0103           | Temperature offset |      | Integer |
 | 0x0104           | Humidity offset    |      | Integer |
+
+> Notes:
+> There are two types of sensors where some come with the raw temperature and humidity reading as 10x of the actual value, some has a 100x factor.
 
 ### Examples
 
@@ -51,11 +54,7 @@ Request(HEX): 01 04 00 01 00 01 60 0A
 | 00 01 | Read 1 words(2 bytes) of data           |
 | 60 0A | CRC, with LSB first, MSB as second byte |
 
-> There are two types of sensors where some come with the raw temperature and humidity reading as 10x of the actual value, some has a 100x factor.
-
 Return(HEX): 01 04 02 01 31 79 74 (for those sensors with x10 factor)
-
-Return(HEX): 01 04 02 0B EA 3F 8F (for those sensors with x100 factor)
 
 | Data  | Description              |
 | ----- | ------------------------ |
@@ -65,7 +64,11 @@ Return(HEX): 01 04 02 0B EA 3F 8F (for those sensors with x100 factor)
 | 01 31 | Temperature Reading(x10) |
 | 79 74 | CRC                      |
 
+Temperature value 0x131 = 305, 305/10 = 30.5 degree Celsius
+
 or
+
+Return(HEX): 01 04 02 0B EA 3F 8F (for those sensors with x100 factor)
 
 | Data  | Description              |
 | ----- | ------------------------ |
@@ -74,8 +77,6 @@ or
 | 02    | Number of bytes returned |
 | 0B EA | Temperature Reading(x100)|
 | 79 74 | CRC                      |
-
-Temperature value 0x131 = 305, 305/10 = 30.5 degree Celsius
 
 Temperature value 0xBEA = 3050, 3050/100 = 30.5 degree Celsius
 
@@ -95,8 +96,6 @@ Request(HEX): 01 04 00 02 00 01 90 0A
 
 Return(HEX): 01 04 02 02 22 38 49 (for those sensors with x10 factor)
 
-Return(HEX): 01 04 02 15 54 B6 5F (for those sensors with x100 factor)
-
 | Data  | Description              |
 | ----- | ------------------------ |
 | 01    | Devive ID                |
@@ -105,7 +104,11 @@ Return(HEX): 01 04 02 15 54 B6 5F (for those sensors with x100 factor)
 | 02 22 | Humidity Reading (10x)   |
 | 38 49 | CRC                      |
 
+Humidity value 0x222 = 546, 546/10 = 54.6 RH %
+
 or
+
+Return(HEX): 01 04 02 15 54 B6 5F (for those sensors with x100 factor)
 
 | Data  | Description              |
 | ----- | ------------------------ |
@@ -114,8 +117,6 @@ or
 | 02    | Number of bytes returned |
 | 15 54 | Humidity Reading (100x)  |
 | B6 5F | CRC                      |
-
-Humidity value 0x222 = 546, 546/10 = 54.6 RH %
 
 Humidity value 0x1554 = 5460, 5460/100 = 54.6 RH %
 
