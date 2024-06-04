@@ -27,12 +27,13 @@ Modbus mb(&rs485);
 void setup() {
 
     rs485.begin(9600, SERIAL_8N1);
+    mb.begin(DDS238_ID);
 
     Serial.begin(115200);
     Serial.println();
 
     // Reading the Device Settings
-    mb.readHoldingRegister(DDS238_ID, DDS238_COMMUNICATION, 1);
+    mb.readHoldingRegister(DDS238_COMMUNICATION, 1);
     uint8_t id = mb.getHighByte();
     uint8_t baud_rate = mb.getLowByte();
 
@@ -42,40 +43,34 @@ void setup() {
     Serial.println( bStr[baud_rate] );
     Serial.println("========================");
 
-    rs485.end();
-
 }
 
 void loop() {
 
-    rs485.begin(9600, SERIAL_8N1);
-
     // Reading Power Meter
-    mb.readHoldingRegister(DDS238_ID, DDS238_VOLTAGE, 1);
+    mb.readHoldingRegister(DDS238_VOLTAGE, 1);
     int16_t voltage = mb.getInt();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_CURRENT, 1);
+    mb.readHoldingRegister(DDS238_CURRENT, 1);
     int16_t current = mb.getInt();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_ACTIVE_POWER, 1);
+    mb.readHoldingRegister(DDS238_ACTIVE_POWER, 1);
     int16_t power = mb.getInt();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_INPUT_ENERGY, 2);
+    mb.readHoldingRegister(DDS238_INPUT_ENERGY, 2);
     int32_t input_energy = mb.getInt32();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_OUTPUT_ENERGY, 2);
+    mb.readHoldingRegister(DDS238_OUTPUT_ENERGY, 2);
     int32_t output_energy = mb.getInt32();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_TOTAL_ENERGY, 2);
+    mb.readHoldingRegister(DDS238_TOTAL_ENERGY, 2);
     int32_t total_energy = mb.getInt32();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_POWER_FACTOR, 1);
+    mb.readHoldingRegister(DDS238_POWER_FACTOR, 1);
     int16_t pf = mb.getInt();
 
-    mb.readHoldingRegister(DDS238_ID, DDS238_FREQUENCY, 1);
+    mb.readHoldingRegister(DDS238_FREQUENCY, 1);
     int16_t freq = mb.getInt();
-
-    rs485.end();
 
     Serial.print("\nVoltage(V): ");        Serial.print(voltage/10.0);
     Serial.print("\tCurrent(A): ");        Serial.print(current/100.0);

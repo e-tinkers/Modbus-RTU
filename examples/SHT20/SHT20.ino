@@ -23,26 +23,27 @@ Modbus mb(&rs485);
 void setup() {
 
     rs485.begin(9600, SERIAL_8N1);
+    mb.begin(SHT20_ID);
 
     Serial.begin(115200);
     Serial.println();
 
-    mb.readHoldingRegister(SHT20_ID, SHT20_ADDRESS, 1);
+    mb.readHoldingRegister(SHT20_ADDRESS, 1);
     int16_t id = mb.getInt();
     Serial.print("Device Address: ");
     Serial.println(id);
 
-    mb.readHoldingRegister(SHT20_ID, SHT20_BAUD_RATE, 1);
+    mb.readHoldingRegister(SHT20_BAUD_RATE, 1);
     int16_t br = mb.getInt();
     Serial.print("Baud Rate: ");
     Serial.println(br);
 
-    mb.readHoldingRegister(SHT20_ID, SHT20_TEMPERATURE_OFFSET, 1);
+    mb.readHoldingRegister(SHT20_TEMPERATURE_OFFSET, 1);
     temp_offset = mb.getInt();
     Serial.print("Temperature Offset: ");
     Serial.println(temp_offset);
 
-    mb.readHoldingRegister(SHT20_ID, SHT20_HUMIDITY_OFFSET, 1);
+    mb.readHoldingRegister(SHT20_HUMIDITY_OFFSET, 1);
     humidity_offset = mb.getInt();
     Serial.print("Humidity Offset: ");
     Serial.println(humidity_offset);
@@ -53,7 +54,7 @@ void setup() {
 
 void loop() {
 
-    mb.readInputRegister(SHT20_ID, SHT20_TEMPERATURE, 1);
+    mb.readInputRegister(SHT20_TEMPERATURE, 1);
     float temperature = mb.getInt()/100.0;
     Serial.print("Temperature: ");
     Serial.println(temperature);
@@ -61,7 +62,7 @@ void loop() {
     // sensor reading, otherwise both values are not correct
     delay(100);
 
-    mb.readInputRegister(SHT20_ID, SHT20_HUMIDITY, 1);
+    mb.readInputRegister(SHT20_HUMIDITY, 1);
     float humidity = mb.getInt()/100.0;
     Serial.print("Humidity: ");
     Serial.println(humidity);

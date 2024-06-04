@@ -41,12 +41,13 @@ void setup() {
     Serial.println();
 
     rs485.begin(9600, SERIAL_8E1);
+    mb.begin(DDM_ID);
 
-    mb.readHoldingRegister(DDM_ID, DDM_DEVICE_ID, 2);
+    mb.readHoldingRegister( DDM_DEVICE_ID, 2);
     float id = mb.getFloat();
-    mb.readHoldingRegister(DDM_ID, DDM_BAUD_RATE, 2);
+    mb.readHoldingRegister(DDM_BAUD_RATE, 2);
     float br = mb.getFloat();
-    mb.readHoldingRegister(DDM_ID, DDM_PARITY, 2);
+    mb.readHoldingRegister(DDM_PARITY, 2);
     float parity = mb.getFloat();
 
     Serial.print("ID: ");             Serial.print(id, 0);
@@ -58,28 +59,28 @@ void setup() {
 void loop() {
 
     // Reading Power Meter
-    mb.readInputRegister(DDM_ID, DDM_VOLTAGE, 2);
+    mb.readInputRegister(DDM_VOLTAGE, 2);
     float volt = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_CURRENT, 2);
+    mb.readInputRegister(DDM_CURRENT, 2);
     float amp = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_ACTIVE_POWER, 2);
+    mb.readInputRegister(DDM_ACTIVE_POWER, 2);
     float pwr = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_REACTIVE_POWER, 2);
+    mb.readInputRegister(DDM_REACTIVE_POWER, 2);
     float rpwr = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_ACTIVE_ENERGY, 2);
+    mb.readInputRegister(DDM_ACTIVE_ENERGY, 2);
     float energy = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_REACTIVE_ENERGY, 2);
+    mb.readInputRegister(DDM_REACTIVE_ENERGY, 2);
     float renergy = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_POWER_FACTOR, 2);
+    mb.readInputRegister(DDM_POWER_FACTOR, 2);
     float pf = mb.getFloat();
 
-    mb.readInputRegister(DDM_ID, DDM_FREQUENCY, 2);
+    mb.readInputRegister(DDM_FREQUENCY, 2);
     float freq = mb.getFloat();
 
     Serial.print("\nVoltage(V): ");               Serial.print(volt);

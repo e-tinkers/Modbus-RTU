@@ -23,6 +23,10 @@ uint16_t Modbus::_calculateCRC(uint8_t* array, uint8_t len) {
 
 }
 
+void Modbus::begin(uint8_t device_id) {
+    _id = device_id;
+}
+
 void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
 
     uint16_t crc = _calculateCRC(packet, size-2);
@@ -211,12 +215,12 @@ const char * Modbus::errorMsg() {
  *                                                   |- register 213
  *                                              |------ register 218
  */
-int8_t Modbus::readDiscreteInputRegister(uint8_t id, uint16_t reg, uint16_t nw) {
+int8_t Modbus::readDiscreteInputRegister(uint16_t reg, uint16_t nw) {
 
     uint16_t _nw = (uint16_t) (((nw - 1) >> 3) + 1);
 
     uint8_t packet[8] = {
-        id,
+        _id,
         READ_DISCRETE_INPUT_REGISTERS,
         highByte(reg), lowByte(reg),
         highByte(_nw), lowByte(_nw),
@@ -233,10 +237,10 @@ int8_t Modbus::readDiscreteInputRegister(uint8_t id, uint16_t reg, uint16_t nw) 
  * request: <id> <0x04> <add_h> <add_l> <nw_h> <nw_l> <crc_h> <crc_l>
  * response: <id> <0x04> <byte_count> <resp1_h> <resp1_l> [<payload2_h> <payload2_l>] <crc_h> <crc_l>
  */
-int8_t Modbus::readInputRegister(uint8_t id, uint16_t reg, uint16_t nw) {
+int8_t Modbus::readInputRegister(uint16_t reg, uint16_t nw) {
 
     uint8_t packet[8] = {
-        id,
+        _id,
         READ_INPUT_REGISTERS,
         highByte(reg), lowByte(reg),
         highByte(nw), lowByte(nw),
@@ -253,10 +257,10 @@ int8_t Modbus::readInputRegister(uint8_t id, uint16_t reg, uint16_t nw) {
  * request: <id> <0x03> <add_h> <add_l> <nw_h> <nw_l> <crc_h> <crc_l>
  * response: <id> <0x03> <byte_count> <resp1_h> <resp1_l> [<payload2_h> <payload2_l>] <crc_h> <crc_l>
  */
-int8_t Modbus::readHoldingRegister(uint8_t id, uint16_t reg, uint16_t nw) {
+int8_t Modbus::readHoldingRegister(uint16_t reg, uint16_t nw) {
 
     uint8_t packet[8] = {
-        id,
+        _id,
         READ_HOLDING_REGISTERS,
         highByte(reg), lowByte(reg),
         highByte(nw), lowByte(nw),
@@ -268,10 +272,10 @@ int8_t Modbus::readHoldingRegister(uint8_t id, uint16_t reg, uint16_t nw) {
 
 }
 
-int8_t Modbus::writeSingleRegister(uint8_t id, uint16_t reg, uint16_t data) {
+int8_t Modbus::writeSingleRegister(uint16_t reg, uint16_t data) {
 
     uint8_t packet[8] = {
-        id,
+        _id,
         WRITE_SINGLE_REGISTER,
         highByte(reg), lowByte(reg),
         highByte(data), lowByte(data),
@@ -285,10 +289,10 @@ int8_t Modbus::writeSingleRegister(uint8_t id, uint16_t reg, uint16_t data) {
 /* Modbus Function Code 0x10 for writing multiple registers
  * respone echo back <id> <func> <reg_h> <reg_l> <N_h> <N_l> <crc_h> <crc_l>
  */
-int8_t Modbus::writeMultipleRegisters(uint8_t id, uint16_t reg, float payload) {
+int8_t Modbus::writeMultipleRegisters(uint16_t reg, float payload) {
 
     uint8_t packet[13] = {
-        id,
+        _id,
         WRITE_MULTIPLE_REGISTERS,
         highByte(reg), lowByte(reg),
         0x00, 0x02,                  // 2 registers (number of registers N)
@@ -305,10 +309,10 @@ int8_t Modbus::writeMultipleRegisters(uint8_t id, uint16_t reg, float payload) {
 
 }
 
-int8_t Modbus::writeMultipleRegisters(uint8_t id, uint16_t reg, uint16_t payload) {
+int8_t Modbus::writeMultipleRegisters(uint16_t reg, uint16_t payload) {
 
     uint8_t packet[11] = {  // to-do the size is not correct if payload consists of multiple uint16_t
-        id,
+        _id,
         WRITE_MULTIPLE_REGISTERS,
         highByte(reg), lowByte(reg),
         0x00, 0x01,                  // 1 register (number of registers N)

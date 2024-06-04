@@ -36,12 +36,15 @@ private:
     void _sendRequest(uint8_t* packet, uint8_t size);
     uint16_t _calculateCRC(uint8_t* array, uint8_t len);
     int8_t _getResponse(uint8_t func, uint16_t nw);
+
     int8_t _errNo;
+    uint8_t _id;
 
     RS485* _rs485;
 
 public:
     Modbus(RS485* p_rs485);
+    void begin(uint8_t device_id);
     void debugPrint(uint8_t * array, size_t len);
     float getFloat();
     int16_t getInt();
@@ -49,13 +52,13 @@ public:
     uint8_t getHighByte();
     uint8_t getLowByte();
     const char* errorMsg();
-    int8_t readCoilRegister(uint8_t id, uint16_t reg, uint16_t nw);
-    int8_t readDiscreteInputRegister(uint8_t id, uint16_t reg, uint16_t nw);
-    int8_t readHoldingRegister(uint8_t id, uint16_t reg, uint16_t nw);
-    int8_t readInputRegister(uint8_t id, uint16_t reg, uint16_t nw);
-    int8_t writeSingleRegister(uint8_t id, uint16_t reg, uint16_t data);
-    int8_t writeMultipleRegisters(uint8_t id, uint16_t reg, float payload);
-    int8_t writeMultipleRegisters(uint8_t id, uint16_t reg, uint16_t payload);
+    int8_t readCoilRegister(uint16_t reg, uint16_t nw);
+    int8_t readDiscreteInputRegister(uint16_t reg, uint16_t nw);
+    int8_t readHoldingRegister(uint16_t reg, uint16_t nw);
+    int8_t readInputRegister(uint16_t reg, uint16_t nw);
+    int8_t writeSingleRegister(uint16_t reg, uint16_t data);
+    int8_t writeMultipleRegisters(uint16_t reg, float payload);
+    int8_t writeMultipleRegisters(uint16_t reg, uint16_t payload);
 
     uint8_t response[255];
 
