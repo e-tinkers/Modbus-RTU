@@ -51,6 +51,8 @@ Request(HEX): 01 04 00 01 00 01 60 0A
 | 00 01 | Read 1 words(2 bytes) of data           |
 | 60 0A | CRC, with LSB first, MSB as second byte |
 
+> There are two types of sensors where some come with the raw temperature and humidity reading as 10x of the actual value, some has a 100x factor.
+
 Return(HEX): 01 04 02 01 31 79 74 (for those sensors with x10 factor)
 
 Return(HEX): 01 04 02 0B EA 3F 8F (for those sensors with x100 factor)
@@ -93,7 +95,7 @@ Request(HEX): 01 04 00 02 00 01 90 0A
 
 Return(HEX): 01 04 02 02 22 38 49 (for those sensors with x10 factor)
 
-Return(HEX): 01 04 02 15 54
+Return(HEX): 01 04 02 15 54 B6 5F (for those sensors with x100 factor)
 
 | Data  | Description              |
 | ----- | ------------------------ |
