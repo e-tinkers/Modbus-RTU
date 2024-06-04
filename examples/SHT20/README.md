@@ -52,6 +52,7 @@ Request(HEX): 01 04 00 01 00 01 60 0A
 | 60 0A | CRC, with LSB first, MSB as second byte |
 
 Return(HEX): 01 04 02 01 31 79 74 (for those sensors with x10 factor)
+
 Return(HEX): 01 04 02 0B EA 3F 8F (for those sensors with x100 factor)
 
 | Data  | Description              |
@@ -73,6 +74,7 @@ or
 | 79 74 | CRC                      |
 
 Temperature value 0x131 = 305, 305/10 = 30.5 degree Celsius
+
 Temperature value 0xBEA = 3050, 3050/100 = 30.5 degree Celsius
 
 > The temperature value is in two-compliment format for negative number, 0xFF33 = -205 or -20.5 degree Celsius
@@ -90,6 +92,7 @@ Request(HEX): 01 04 00 02 00 01 90 0A
 | 90 0A | CRC, with LSB first, MSB as second byte |
 
 Return(HEX): 01 04 02 02 22 38 49 (for those sensors with x10 factor)
+
 Return(HEX): 01 04 02 15 54
 
 | Data  | Description              |
@@ -111,12 +114,15 @@ or
 | B6 5F | CRC                      |
 
 Humidity value 0x222 = 546, 546/10 = 54.6 RH %
+
 Humidity value 0x1554 = 5460, 5460/100 = 54.6 RH %
 
 #### Read both Temperature and Humidity values
 
 Temperature and Humidity values can be read with one single command
+
 Request(HEX): 01 04 00 01 00 02 20 0B
+
 Return(HEX):  01 04 04 01 31 02 22 2A CE
 
 #### Read Meter Device ID
