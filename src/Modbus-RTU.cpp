@@ -95,7 +95,7 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
 
         //timeout
         if (millis() - respStart > MODBUS_RESPONSE_TIMEOUT) {
-          _errNo = 12;
+          _errNo = ERROR_NETWORK_TIMEOUT;
           return 0;
         }
 
@@ -105,7 +105,7 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
             memcpy(temp, response, i-2);
             int16_t crc = _calculateCRC(response, i-2);
             if ( highByte(crc) != response[i-1] || lowByte(crc) != response[i-2]) {
-               _errNo = 13;    //crc error
+               _errNo = ERROR_CRC_ERROR;    //crc error
                return 0;
             }
             break;
@@ -215,10 +215,12 @@ int8_t Modbus::readDiscreteInputRegister(uint8_t id, uint16_t reg, uint16_t nw) 
 
     uint16_t _nw = (uint16_t) (((nw - 1) >> 3) + 1);
 
-    uint8_t packet[8] = {id, READ_DISCRETE_INPUT_REGISTERS,
-                        highByte(reg), lowByte(reg), highByte(_nw), lowByte(_nw),
-                        0, 0
-                        };
+    uint8_t packet[8] = {
+        id,
+        READ_DISCRETE_INPUT_REGISTERS,
+        highByte(reg), lowByte(reg),
+        highByte(_nw), lowByte(_nw),
+        0, 0};
 
     _sendRequest(packet, 8);
 
@@ -233,9 +235,12 @@ int8_t Modbus::readDiscreteInputRegister(uint8_t id, uint16_t reg, uint16_t nw) 
  */
 int8_t Modbus::readInputRegister(uint8_t id, uint16_t reg, uint16_t nw) {
 
-    uint8_t packet[8] = {id, READ_INPUT_REGISTERS, highByte(reg), lowByte(reg),
-                         highByte(nw), lowByte(nw), 0, 0
-                        };
+    uint8_t packet[8] = {
+        id,
+        READ_INPUT_REGISTERS,
+        highByte(reg), lowByte(reg),
+        highByte(nw), lowByte(nw),
+        0, 0};
 
     _sendRequest(packet, 8);
 
@@ -250,9 +255,12 @@ int8_t Modbus::readInputRegister(uint8_t id, uint16_t reg, uint16_t nw) {
  */
 int8_t Modbus::readHoldingRegister(uint8_t id, uint16_t reg, uint16_t nw) {
 
-    uint8_t packet[8] = {id, READ_HOLDING_REGISTERS, highByte(reg), lowByte(reg),
-                         highByte(nw), lowByte(nw), 0, 0
-                        };
+    uint8_t packet[8] = {
+        id,
+        READ_HOLDING_REGISTERS,
+        highByte(reg), lowByte(reg),
+        highByte(nw), lowByte(nw),
+        0, 0};
 
     _sendRequest(packet, 8);
 
@@ -262,8 +270,12 @@ int8_t Modbus::readHoldingRegister(uint8_t id, uint16_t reg, uint16_t nw) {
 
 int8_t Modbus::writeSingleRegister(uint8_t id, uint16_t reg, uint16_t data) {
 
-    uint8_t packet[8] = {id, WRITE_SINGLE_REGISTER,
-        highByte(reg), lowByte(reg), highByte(data), lowByte(data), 0, 0};
+    uint8_t packet[8] = {
+        id,
+        WRITE_SINGLE_REGISTER,
+        highByte(reg), lowByte(reg),
+        highByte(data), lowByte(data),
+        0, 0};
 
         _sendRequest(packet, 8);
 
@@ -275,10 +287,12 @@ int8_t Modbus::writeSingleRegister(uint8_t id, uint16_t reg, uint16_t data) {
  */
 int8_t Modbus::writeMultipleRegisters(uint8_t id, uint16_t reg, float payload) {
 
-    uint8_t packet[13] = {id, WRITE_MULTIPLE_REGISTERS, highByte(reg), lowByte(reg),
-        0x00,
-        0x02,                        // 2 registers (number of registers N)
-        0x04,                        // 4 bytes(2*N) for float data
+    uint8_t packet[13] = {
+        id,
+        WRITE_MULTIPLE_REGISTERS,
+        highByte(reg), lowByte(reg),
+        0x00, 0x02,                  // 2 registers (number of registers N)
+        sizeof(payload),             // 4 bytes(2*N) for float data
         ((uint8_t*)&payload)[3],     // convert from float little Endian to big Endian
         ((uint8_t*)&payload)[2],
         ((uint8_t*)&payload)[1],
@@ -293,9 +307,11 @@ int8_t Modbus::writeMultipleRegisters(uint8_t id, uint16_t reg, float payload) {
 
 int8_t Modbus::writeMultipleRegisters(uint8_t id, uint16_t reg, uint16_t payload) {
 
-    uint8_t packet[11] = {id, WRITE_MULTIPLE_REGISTERS, highByte(reg), lowByte(reg),
-        0x00,
-        0x01,                        // 1 register (number of registers N)
+    uint8_t packet[11] = {  // to-do the size is not correct if payload consists of multiple uint16_t
+        id,
+        WRITE_MULTIPLE_REGISTERS,
+        highByte(reg), lowByte(reg),
+        0x00, 0x01,                  // 1 register (number of registers N)
         0x02,                        // 2 bytes(2*N)
         ((uint8_t*)&payload)[1],     // convert from uint16_t little Endian to big Endian
         ((uint8_t*)&payload)[0],
