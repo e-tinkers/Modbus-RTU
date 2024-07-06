@@ -38,6 +38,11 @@ uint16_t Modbus::_calculateCRC(uint8_t* array, uint8_t len) {
 void Modbus::begin(uint8_t device_id, bool debug_on) {
     _id = device_id;
     _debugEnabled = debug_on;
+    _byteCount = 0;
+}
+
+uint8_t Modbus::available() {
+    return _byteCount;
 }
 
 void Modbus::_sendRequest(uint8_t* packet, uint8_t size) {
@@ -107,8 +112,8 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
         if (_rs485->available()>0)
             response[i++] = _rs485->read();
 
-        // error response is 6 bytes long, and func byte MSB set to 1
-        if (i == 6 && response[1] >= 0x80) {
+        // error response is 5 bytes long, and func byte MSB is set to 1
+        if (i == 5 && response[1] >= 0x80) {
             _errNo = response[2];
             return 0;
         }
@@ -136,6 +141,8 @@ int8_t Modbus::_getResponse(uint8_t func, uint16_t nw) {
 
     if(_debugEnabled)
         debugPrint("RX <==", response, _responseLength);
+
+    _byteCount = response[2];
 
     return _responseLength;
 

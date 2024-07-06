@@ -40,12 +40,14 @@ private:
     int8_t _errNo;
     uint8_t _id;
     bool _debugEnabled;
+    uint8_t _byteCount;
 
     RS485* _rs485;
 
 public:
     Modbus(RS485* p_rs485);
     void begin(uint8_t device_id, bool debug_on=false);
+    uint8_t available();
     float getFloat();
     int16_t getInt();
     int32_t getInt32();
